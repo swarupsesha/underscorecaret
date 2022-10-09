@@ -1,0 +1,32 @@
+package com.underscore.caret;
+
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.editor.CaretVisualAttributes;
+import com.intellij.openapi.editor.EditorFactory;
+import com.intellij.openapi.editor.event.EditorFactoryEvent;
+import com.intellij.openapi.editor.event.EditorFactoryListener;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+
+import static com.intellij.openapi.editor.CaretVisualAttributes.Shape.UNDERSCORE;
+import static com.intellij.openapi.editor.CaretVisualAttributes.Weight.THIN;
+import static java.awt.Color.WHITE;
+
+public class UnderscoreCaretPlugin extends AnAction {
+    @Override
+    public void actionPerformed(@NotNull AnActionEvent e) {
+
+        EditorFactoryListener editorFactoryListener = new EditorFactoryListener() {
+            @Override
+            public void editorCreated(@NotNull EditorFactoryEvent editorFactoryEvent) {
+                CaretVisualAttributes c = new CaretVisualAttributes(WHITE, THIN, UNDERSCORE, 0.01f);
+                Arrays.stream(EditorFactory.getInstance().getAllEditors()).forEach(editor -> {
+                    editor.getCaretModel().getCurrentCaret().setVisualAttributes(c);
+                });
+            }
+        };
+        EditorFactory.getInstance().addEditorFactoryListener(editorFactoryListener, () -> {});
+    }
+}
